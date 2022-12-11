@@ -28,17 +28,24 @@ const Home = () => {
    getData().then(response => console.log(response))
   }, [ ])
   
-const handleDelete =async () => {
+const handleDelete =async (id) => {
   const res = await Swal.fire({
     title: "Confirm",
-    text: "Are you sure want to delete this note?",
+    text: "Are you sure want to delete this task?",
     icon: "info",
     confirmButtonText: "Continue",
     showCancelButton: true,
   });
   console.log(" delete res", res)
   if (res.isConfirmed) {
-// const 
+const res = await axios.delete(`https://5000-kishore1477-todolist-tm4dcxaxdad.ws-eu78.gitpod.io/deleteItem/${id}`)
+console.log("res", res)
+if(res.status == 200){
+  await getData()
+  Swal.fire("Deleted!", res.data.msg, "success");
+}
+  }else{
+    Swal.fire("Cancelled", "Your task is safe :)", "error");
   }
 }
 
@@ -87,7 +94,8 @@ const EonChange = (e)=>{
     setformData({...formData, [e.target.name]:e.target.value})
   }
 
-  const addData = async()=>{
+  const addData = async(e)=>{
+    e.preventDefault()
     console.log("formdata", formData)
     const {name, desc} = formData
     const url = 'https://5000-kishore1477-todolist-tm4dcxaxdad.ws-eu78.gitpod.io/createItem'
@@ -100,8 +108,15 @@ const EonChange = (e)=>{
       }
     })
   console.log("response: " ,res)
+if(res.status === 200){
+  await getData()
+  setformData({name:"", desc:""})
+  setcond(false)
+  alert(res.data.msg)
 
-    setcond(false)
+}else{
+  alert(res.data.msg)
+}
   }
   return (
     <div className="container">
@@ -134,7 +149,7 @@ const EonChange = (e)=>{
       </Modal>
       <div className='mt-9 w-full md:w-1/2 mx-auto'>
         {/* show add button */}
-        {!cond && <a onClick={showAdd} className='cursor-pointer hover:text-red-400 text-3xl md:text-4xl 
+        {!cond && <a onClick={showAdd} className='cursor-pointer hover:text-red-400 text-2xl md:text-3xl 
        font-bold d-flex flex items-center justify-center'>
 <AiOutlinePlus className='mx-4 hover:bg-red-400 hover:rounded-full'/>
 <button className='cursor-pointer hover:text-red-400 bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 to-violet-500' >Add Task</button>
@@ -143,7 +158,7 @@ const EonChange = (e)=>{
  {/* add data */}
 {cond  && <div className='w-full relative '>
 
-<form  className="p-2 w-full" onSubmit={addData}  >
+<form  className="p-2 w-full" onSubmit={async(e)=> await addData(e)}  >
 
  
           <div className="   p-3 w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out "  >
@@ -169,7 +184,7 @@ const EonChange = (e)=>{
 </div>
 <div  className='w-1/4  d-flex  flex items-center justify-center  '> 
 <BiEditAlt size={25} onClick = {async()=> await handleEdit({id:item._id, name:item.name, desc:item.desc})} className='w-1/2 text-blue-700 cursor-pointer'/>
-<MdDeleteOutline onClick={handleDelete} size={25} className='w-1/2  text-red-700 cursor-pointer'/>
+<MdDeleteOutline onClick={async()=> await handleDelete(item._id)} size={25} className='w-1/2  text-red-700 cursor-pointer'/>
 </div>
 
   </div>

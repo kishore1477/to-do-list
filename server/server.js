@@ -81,9 +81,9 @@ app.delete('/deleteItem/:id', async(req,res) => {
         const id = req.params.id
         const deleteRes = await Item.findByIdAndDelete(id)
         if(deleteRes){
-            res.status(200).json({"msg":"Item deleted successfully"})
+            res.status(200).json({"msg":"Task deleted successfully"})
             }else{
-                res.status(400).json({"msg":"Item not deleted successfully"})
+                res.status(400).json({"msg":"Task not deleted successfully"})
             }
             
             

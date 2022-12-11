@@ -65,7 +65,9 @@ try {
     const newdata = {name:name, desc:desc}
 
  const updateRes = await Item.findByIdAndUpdate(id,  {$set: newdata }, { new: true } )
- res.status(400).json({"msg":"data updated successfully", "data": updateRes})
+ if(updateRes){
+     res.status(200).json({"msg":"data updated successfully", "data": updateRes})
+ }
 }else{
     res.status(400).json({"msg":"name is required"})
 }

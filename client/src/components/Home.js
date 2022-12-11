@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import { Link } from "react-router-dom";
+import axios from 'axios';
 import { AiOutlinePlus } from 'react-icons/ai';
 const Home = () => {
   const [cond, setcond] = useState(false)
@@ -7,6 +8,10 @@ const Home = () => {
     setcond(true)
   }
   const showCancel =()=>{
+    setcond(false)
+  }
+  const handleform = async()=>{
+    const res =  await axios.post()
     setcond(false)
   }
   return (
@@ -27,13 +32,13 @@ const Home = () => {
 
              
             <input type="text" id="name" placeholder='Task name' className='border-none bg-transparent outline-none'/> <br/>
-            <input type="text" id="name" placeholder='description' className='border-none bg-transparent outline-none'/>
+            <textarea   placeholder='description' className='w-full border-none bg-transparent outline-none'/>
             
           </div>
         
 </form>
 <div className='absolute    right-0 '>
- <button onClick={showCancel} className=' text-white bg-red-400 border-0 py-2 px-2 focus:outline-none hover:bg-red-600 rounded text-sm'>Cancel</button> <button className=' text-white bg-red-400 border-0 py-2 px-2 focus:outline-none hover:bg-red-600 rounded text-sm '>Add Task</button></div></div>}
+ <button onClick={showCancel} className=' text-white bg-red-400 border-0 py-2 px-2 focus:outline-none hover:bg-red-600 rounded text-sm'>Cancel</button> <button onClick={handleform} className='  text-white bg-red-400 border-0 py-2 px-2 focus:outline-none hover:bg-red-600 rounded text-sm '>Add Task</button></div></div>}
       </div>
 
 </div>

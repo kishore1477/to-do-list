@@ -7,26 +7,41 @@ import axios from 'axios';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { BiEditAlt } from 'react-icons/bi';
 import { MdDeleteOutline } from 'react-icons/md';
-const Home = () => {
-  const [show, setShow] = useState(false);
+import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
+import {useDispatch } from "react-redux"
+import {actionCreators}  from '../redux/index';
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+const Home = () => {
+  useEffect(() => {
+    dispatch(actionCreators.getItem())
+
+  
+ //  getData().then(response => console.log(response))
+ }, [ ])
   const [Fetcheddata, setFetcheddata] = useState([])
   const [formData, setformData] = useState({name:"", desc:""})
   const [cond, setcond] = useState(false)
   const [edata, setedata] = useState({id:"",ename:"", edesc:""})
-  const getData = async() =>{
-    const fetcheddata= await axios.post('https://5000-kishore1477-todolist-tm4dcxaxdad.ws-eu78.gitpod.io/getItem')
-    console.log("fetcheddata", fetcheddata)
-    setFetcheddata(fetcheddata.data)
+  const dispatch = useDispatch()
+
+  console.log("dispatch", dispatch)
+  const [show, setShow] = useState(false);
+  const item = useSelector(state => state)
+  console.log("item", item)
+  // setFetcheddata(item?.item)
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+ 
+  // const getData = async() =>{
+  //   const fetcheddata= await axios.post('https://filthy-pike-clothes.cyclic.app/getItem')
+  //   console.log("fetcheddata", fetcheddata)
+  //   setFetcheddata(fetcheddata.data)
 
 
-  }
+  // }
   // getData().then(response => console.log(response)) 
-  useEffect(() => {
-   getData().then(response => console.log(response))
-  }, [ ])
+
   
 const handleDelete =async (id) => {
   const res = await Swal.fire({
@@ -38,10 +53,10 @@ const handleDelete =async (id) => {
   });
   console.log(" delete res", res)
   if (res.isConfirmed) {
-const res = await axios.delete(`https://5000-kishore1477-todolist-tm4dcxaxdad.ws-eu78.gitpod.io/deleteItem/${id}`)
+const res = await axios.delete(`https://filthy-pike-clothes.cyclic.app/deleteItem/${id}`)
 console.log("res", res)
 if(res.status == 200){
-  await getData()
+  // await getData()
   Swal.fire("Deleted!", res.data.msg, "success");
 }
   }else{
@@ -60,7 +75,7 @@ const handleUpdate = async()=>{
   console.log("Edata", edata)
   const res = await axios({
     method: 'put',
-    url: `https://5000-kishore1477-todolist-tm4dcxaxdad.ws-eu78.gitpod.io/updateItem/${id}`,
+    url: `https://filthy-pike-clothes.cyclic.app/updateItem/${id}`,
     data:{
     
       name:ename,
@@ -70,7 +85,7 @@ const handleUpdate = async()=>{
       console.log("Update response", res)
       if(res.status === 200){
   handleClose()
-       await getData()
+      //  await getData()
 
       }else{
         alert(res.data.msg)
@@ -84,7 +99,6 @@ const EonChange = (e)=>{
 }
   
   const showAdd = ()=>{
-   
     setcond(true)
   }
   const showCancel =()=>{
@@ -98,7 +112,7 @@ const EonChange = (e)=>{
     e.preventDefault()
     console.log("formdata", formData)
     const {name, desc} = formData
-    const url = 'https://5000-kishore1477-todolist-tm4dcxaxdad.ws-eu78.gitpod.io/createItem'
+    const url = 'https://filthy-pike-clothes.cyclic.app/createItem'
     const res = await axios({
       method: 'post',
       url:  url,
@@ -109,7 +123,7 @@ const EonChange = (e)=>{
     })
   console.log("response: " ,res)
 if(res.status === 200){
-  await getData()
+  // await getData()
   setformData({name:"", desc:""})
   setcond(false)
   alert(res.data.msg)
@@ -158,7 +172,7 @@ if(res.status === 200){
  {/* add data */}
 {cond  && <div className='w-full relative '>
 
-<form  className="p-2 w-full" onSubmit={async(e)=> await addData(e)}  >
+<form  className="p-2 w-full" onSubmit={async(e)=>dispatch(actionCreators.getItem())}  >
 
  
           <div className="   p-3 w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out "  >
@@ -176,7 +190,7 @@ if(res.status === 200){
 
 <h1 className=' text-2xl md:text-3xl font-bold my-10  bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 to-violet-500'>Your To  Do List</h1>
 {/* show data */}
-      {Fetcheddata.data ?<>{ Fetcheddata.data && Fetcheddata.data.map((item,id)=>{
+      {item?.item?.data ?<>{ item?.item?.data.map((item,id)=>{
   return <div key={id} className='mt-10 d-flex w-full bg-slate-100 '>
 <div className='w-3/4   '>
 <div className=' '>{item.name}</div>
